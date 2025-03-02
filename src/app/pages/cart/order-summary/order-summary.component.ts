@@ -1,7 +1,8 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, Input } from '@angular/core';
 import { CartService } from '../../../services/cart.service';
 import { ButtonComponent } from '../../../components/button/button.component';
 import { PrimaryButtonComponent } from '../../../components/primary-button/primary-button.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-order-summary',
@@ -14,7 +15,9 @@ import { PrimaryButtonComponent } from '../../../components/primary-button/prima
           <span class="text-lg">Total</span>
           <span class="text-lg font-bold">{{ '$ ' + total() }}</span>
         </div>
-        <app-primary-button label="Proceed to checkout" />
+        @if (showCheckoutButton) {
+          <app-primary-button label="Proceed to checkout" (click)="proceedToCheckout()" />
+        }
       </div>
     </div>
   `,
@@ -22,6 +25,9 @@ import { PrimaryButtonComponent } from '../../../components/primary-button/prima
 })
 export class OrderSummaryComponent {
   cartService = inject(CartService);
+  router = inject(Router);
+  
+  @Input() showCheckoutButton = true;
 
   total = computed(() => {
     let total = 0;
@@ -31,4 +37,8 @@ export class OrderSummaryComponent {
 
     return total;
   });
+  
+  proceedToCheckout() {
+    this.router.navigate(['/checkout/shipping']);
+  }
 }
